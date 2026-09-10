@@ -1,7 +1,7 @@
 import { Router } from "express";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import { generateToken } from "../utils/auth.js";
+import { generateToken, verifyAccessToken } from "../utils/auth.js";
 
 const router = Router();
 
@@ -49,6 +49,39 @@ router.post("/register", async (req, res) => {
 		},
 		accessToken,
 	});
+});
+
+router.get("/me", async (req, res) => {
+	const accessToken = req.headers.authorization?.split(" ")[1];
+	try {
+		const decoded = verifyAccessToken(accessToken);
+
+		const user = await userModel.findById(decoded.id);
+
+		res.status(200).json({
+			message: "User fetched successfully",
+			data: {
+				users: {
+					name: user.name,
+					email: user.email,
+				},
+			},
+		});
+	} catch (err) {
+		return res.status(401).json({
+			message: "Unathorized, Invalid or Expired Token",
+		});
+	}
+});
+
+router.post("/refresh", async (req, res) => {
+	const refreshToken = req.cookies.refreshToken;
+
+	if (!refreshToken) {
+		return res.status(401).json({
+			message: "Unathorized, Invalid or Expired Token",
+		});
+	}
 });
 
 export default router;
