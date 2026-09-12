@@ -17,7 +17,7 @@ const Profile = () => {
 	}, []);
 
 	return (
-		<main>
+		<main className='flex flex-col gap-3'>
 			<h1>Profile</h1>
 			<p>Name: {authContext.user?.name}</p>
 			<p>Email: {authContext.user?.email}</p>

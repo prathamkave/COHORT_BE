@@ -36,7 +36,7 @@ const Register = () => {
 	return (
 		<main>
 			<form
-				className='flex-col gap-4'
+				className='flex flex-col gap-4'
 				onSubmit={handleSubmit}
 			>
 				<input
